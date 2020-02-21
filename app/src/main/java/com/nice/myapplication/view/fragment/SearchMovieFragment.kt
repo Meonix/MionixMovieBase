@@ -33,7 +33,6 @@ class SearchMovieFragment : Fragment() {
     private lateinit var searchMovieAdapter:SearchMovieAdapter
     private val myViewModel : MainViewModel by viewModel()
     private var pageMovie = 1
-    private lateinit var query: String
     private lateinit var SearchMovieView : View
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -84,8 +83,5 @@ class SearchMovieFragment : Fragment() {
         }
 
         return SearchMovieView
-    }
-    private fun observeInput(sharedViewModel: SharedViewModel) {
-
     }
 }

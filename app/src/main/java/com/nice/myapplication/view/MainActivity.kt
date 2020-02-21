@@ -4,9 +4,13 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.ImageButton
 import android.widget.ProgressBar
+import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,7 +28,6 @@ class MainActivity : AppCompatActivity() {
     private var pageUpcoming = 1
     private var popularIsLoading = true
     private var upComingIsLoading = true
-    private lateinit var ibSearch : ImageButton
     private lateinit var progressBar : ProgressBar
     private val myViewModel : MainViewModel by viewModel()
     private lateinit var recyclerView: RecyclerView
@@ -34,7 +37,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapterPopularMovieView : PopularMovieAdapter
     private lateinit var adapterUpcomingMovieView : UpComingMovieAdapter
-
+    private lateinit var toolbar : Toolbar
 
     private val listPopularMovie :MutableList<Result> = mutableListOf()
     private val listUpcomingMovie :MutableList<Result> = mutableListOf()
@@ -42,16 +45,10 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         initView()
-
-        ibSearch.setOnClickListener {
-            val intent = Intent(this@MainActivity, SearchActivity::class.java)
-            startActivity(intent)
-        }
         setupViewModel()
     }
     private fun initView(){
         recyclerView = findViewById(R.id.rvPopularMovie)
-        ibSearch = findViewById(R.id.ibSearch)
         recyclerViewUpcoming = findViewById(R.id.rvUpcomingMovie)
         linearLayoutManager = LinearLayoutManager(this)
         linearLayoutManager.orientation = LinearLayoutManager.HORIZONTAL
@@ -67,6 +64,8 @@ class MainActivity : AppCompatActivity() {
         recyclerViewUpcoming.setHasFixedSize(true)
 
         progressBar = findViewById(R.id.mainProgressBar)
+        toolbar = findViewById(R.id.main_toolbar)
+        setSupportActionBar(toolbar)
     }
     private fun setupViewModel() {
         // Setup Trending Movie Recycle View
@@ -148,5 +147,28 @@ class MainActivity : AppCompatActivity() {
 
             upComingIsLoading = true
         }, 1200)
+    }
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        super.onCreateOptionsMenu(menu)
+        menuInflater.inflate(R.menu.option_menu_main, menu)
+        return true
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        super.onOptionsItemSelected(item)
+        if (item.itemId == R.id.login) {
+//            mAuth!!.signOut()
+            SendUserToLoginActivity()
+            Toast.makeText(this,"asdads",Toast.LENGTH_SHORT).show()
+        }
+        if(item.itemId == R.id.search){
+            val intent = Intent(this@MainActivity, SearchActivity::class.java)
+            startActivity(intent)
+        }
+        return true
+    }
+    private fun SendUserToLoginActivity(){
+        val loginIntent = Intent(this@MainActivity, LoginActivity::class.java)
+        startActivity(loginIntent)
     }
 }
