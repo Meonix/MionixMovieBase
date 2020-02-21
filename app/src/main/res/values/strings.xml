@@ -5,4 +5,5 @@
     <string name="upcoming">UpComing</string>
     <string name="search">Search...</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="log_out">Log out</string>
 </resources>

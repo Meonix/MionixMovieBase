@@ -7,13 +7,15 @@ import android.os.Handler
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.widget.ImageButton
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.database.DatabaseReference
 import com.nice.myapplication.viewModel.MainViewModel
 import com.nice.myapplication.R
 import com.nice.myapplication.model.Result
@@ -24,6 +26,9 @@ import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
 class MainActivity : AppCompatActivity() {
+    private var mAuth: FirebaseAuth? = null
+    private var UsersRef: DatabaseReference? = null
+    private var currentUser: FirebaseUser? = null
     private var pagePopular = 1
     private var pageUpcoming = 1
     private var popularIsLoading = true
@@ -66,6 +71,9 @@ class MainActivity : AppCompatActivity() {
         progressBar = findViewById(R.id.mainProgressBar)
         toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
+
+        mAuth = FirebaseAuth.getInstance()
+        currentUser = mAuth!!.currentUser
     }
     private fun setupViewModel() {
         // Setup Trending Movie Recycle View
@@ -151,6 +159,11 @@ class MainActivity : AppCompatActivity() {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.option_menu_main, menu)
+        if (currentUser == null) {
+            menu.findItem(R.id.login).setVisible(true)
+        } else {
+            menu.findItem(R.id.login).setVisible(false)
+        }
         return true
     }
 
@@ -165,10 +178,17 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
         }
+        if(item.itemId == R.id.profile){
+            SendUserToProfileActivity()
+        }
         return true
     }
     private fun SendUserToLoginActivity(){
         val loginIntent = Intent(this@MainActivity, LoginActivity::class.java)
+        startActivity(loginIntent)
+    }
+    private fun SendUserToProfileActivity(){
+        val loginIntent = Intent(this@MainActivity, ProfileActivity::class.java)
         startActivity(loginIntent)
     }
 }

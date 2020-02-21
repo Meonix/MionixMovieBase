@@ -64,6 +64,7 @@ dependencies {
 
     //Firebase
     implementation 'com.google.firebase:firebase-auth:15.0.0'
+    implementation 'com.google.firebase:firebase-database:15.0.0'
     //Logging Interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     // picasso load image form https url into view holder

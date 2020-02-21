@@ -11,6 +11,11 @@
         android:title="Login"
         app:showAsAction="collapseActionView"
         />
+    <item
+        android:title="Profile"
+        android:id="@+id/profile"
+        app:showAsAction="withText"
+        />
 
 
 </menu>
