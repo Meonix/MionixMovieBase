@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Mionix Movie Base</string>
+    <string name="movies">Movies</string>
+    <string name="trending">Trending</string>
+    <string name="upcoming">UpComing</string>
+    <string name="search">Search...</string>
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+</resources>
