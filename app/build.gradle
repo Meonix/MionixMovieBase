@@ -63,8 +63,12 @@ dependencies {
     implementation group: 'androidx.lifecycle', name: 'lifecycle-extensions', version: '2.0.0-alpha1'
 
     //Firebase
-    implementation 'com.google.firebase:firebase-auth:15.0.0'
-    implementation 'com.google.firebase:firebase-database:15.0.0'
+    implementation 'com.google.firebase:firebase-auth:16.1.0'
+    implementation 'com.google.firebase:firebase-database:16.0.1'
+    implementation 'com.google.firebase:firebase-core:16.0.6'
+    implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
+    //Facebook SDK
+    implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
     //Logging Interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     // picasso load image form https url into view holder

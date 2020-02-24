@@ -160,9 +160,9 @@ class MainActivity : AppCompatActivity() {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.option_menu_main, menu)
         if (currentUser == null) {
-            menu.findItem(R.id.login).setVisible(true)
+            menu.findItem(R.id.login).title = "Login"
         } else {
-            menu.findItem(R.id.login).setVisible(false)
+            menu.findItem(R.id.login).title = "Profile"
         }
         return true
     }
@@ -178,17 +178,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
         }
-        if(item.itemId == R.id.profile){
-            SendUserToProfileActivity()
-        }
         return true
     }
     private fun SendUserToLoginActivity(){
-        val loginIntent = Intent(this@MainActivity, LoginActivity::class.java)
-        startActivity(loginIntent)
-    }
-    private fun SendUserToProfileActivity(){
-        val loginIntent = Intent(this@MainActivity, ProfileActivity::class.java)
+        val loginIntent = Intent(this@MainActivity, SigninActivity::class.java)
         startActivity(loginIntent)
     }
 }

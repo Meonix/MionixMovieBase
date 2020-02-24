@@ -6,4 +6,6 @@
     <string name="search">Search...</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="log_out">Log out</string>
+    <string name="facebook_application_id" translatable="false" >2529013863990063</string>
+    <string name="facebook_login_protocol_scheme" translatable="false">fb2529013863990063</string>
 </resources>

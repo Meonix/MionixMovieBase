@@ -14,12 +14,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.AppCompat.NoActionBar"
         tools:ignore="GoogleAppIndexingWarning">
-        <activity android:name=".view.RegisterActivity"
-            android:parentActivityName=".view.LoginActivity"/>
-        <activity android:name=".view.ProfileActivity"
-            android:parentActivityName=".view.MainActivity"/>
-        <activity android:name=".view.LoginActivity"
-            android:parentActivityName=".view.MainActivity"/>
+        <activity android:name=".view.SigninActivity"></activity>
+        <activity
+            android:name=".view.RegisterActivity"
+            android:parentActivityName=".view.LoginActivity" />
+        <activity
+            android:name=".view.ProfileActivity"
+            android:parentActivityName=".view.MainActivity" />
+        <activity
+            android:name=".view.LoginActivity"
+            android:parentActivityName=".view.MainActivity" />
         <activity
             android:name=".view.MovieDetail"
             android:parentActivityName=".view.MainActivity" />
