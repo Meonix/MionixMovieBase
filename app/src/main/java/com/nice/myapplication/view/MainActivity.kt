@@ -178,6 +178,10 @@ class MainActivity : AppCompatActivity() {
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
         }
+        if(item.itemId == R.id.loginLine){
+            val intent = Intent(this@MainActivity, LoginwithLine::class.java)
+            startActivity(intent)
+        }
         return true
     }
     private fun SendUserToLoginActivity(){

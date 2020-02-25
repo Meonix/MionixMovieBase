@@ -11,6 +11,11 @@
         android:title="Login"
         app:showAsAction="collapseActionView"
         />
+    <item
+        android:id="@+id/loginLine"
+        android:title="Login with Line"
+        app:showAsAction="collapseActionView"
+        />
 
 
 </menu>

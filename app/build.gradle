@@ -69,6 +69,8 @@ dependencies {
     implementation 'com.firebaseui:firebase-ui-auth:4.3.1'
     //Facebook SDK
     implementation 'com.facebook.android:facebook-android-sdk:[4,5)'
+    //Line
+    implementation 'com.linecorp:linesdk:5.0.1'
     //Logging Interceptor
     implementation 'com.squareup.okhttp3:logging-interceptor:4.3.1'
     // picasso load image form https url into view holder
