@@ -4,28 +4,38 @@ import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Handler
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.ProgressBar
 import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
+import androidx.core.app.ActivityOptionsCompat
+import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
+import com.nice.app_ex.data.api.POSTER_BASE_URL
 import com.nice.myapplication.viewModel.MainViewModel
 import com.nice.myapplication.R
 import com.nice.myapplication.model.Result
+import com.nice.myapplication.repo.ListPopularMovieRepo
+import com.nice.myapplication.view.adapter.OnItemClickListener
 import com.nice.myapplication.view.adapter.PopularMovieAdapter
 import com.nice.myapplication.view.adapter.UpComingMovieAdapter
+import com.squareup.okhttp.OkHttpClient
+import com.squareup.picasso.OkHttpDownloader
+import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
+import kotlinx.android.synthetic.main.item_main_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
 
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity() , OnItemClickListener {
     private var mAuth: FirebaseAuth? = null
     private var UsersRef: DatabaseReference? = null
     private var currentUser: FirebaseUser? = null
@@ -83,7 +93,7 @@ class MainActivity : AppCompatActivity() {
             listPopularMovie.addAll(it.results)
             recyclerView.adapter!!.notifyDataSetChanged()
         })
-        adapterPopularMovieView = PopularMovieAdapter(this@MainActivity,listPopularMovie, this)
+        adapterPopularMovieView = PopularMovieAdapter(this@MainActivity,listPopularMovie, this,this)
 
         recyclerView.adapter = adapterPopularMovieView
 
@@ -113,7 +123,7 @@ class MainActivity : AppCompatActivity() {
             listUpcomingMovie.addAll(it.results)
             recyclerViewUpcoming.adapter!!.notifyDataSetChanged()
         })
-        adapterUpcomingMovieView = UpComingMovieAdapter(this@MainActivity,listUpcomingMovie, this)
+        adapterUpcomingMovieView = UpComingMovieAdapter(this@MainActivity,listUpcomingMovie, this,this)
         recyclerViewUpcoming.adapter = adapterUpcomingMovieView
 
         recyclerViewUpcoming.addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -187,5 +197,16 @@ class MainActivity : AppCompatActivity() {
     private fun SendUserToLoginActivity(){
         val loginIntent = Intent(this@MainActivity, SigninActivity::class.java)
         startActivity(loginIntent)
+    }
+    override fun onItemClicked(listPopularMovie: Result) {
+        val moviePosterURL = POSTER_BASE_URL + listPopularMovie.posterPath
+        val intent = Intent(this@MainActivity, MovieDetail::class.java)
+                intent.putExtra("movie_id",listPopularMovie.id)
+                intent.putExtra("poster_path",moviePosterURL)
+                val options: ActivityOptionsCompat = ActivityOptionsCompat
+                    .makeSceneTransitionAnimation(
+                        this@MainActivity,ivPopularMovie
+                        , ViewCompat.getTransitionName(ivPopularMovie).toString())
+        startActivity(intent,options.toBundle())
     }
 }

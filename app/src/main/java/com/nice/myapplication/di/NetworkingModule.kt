@@ -13,7 +13,7 @@ import okhttp3.logging.HttpLoggingInterceptor
 import org.koin.dsl.module
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-
+import java.io.IOException
 class AuthInterceptor : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
 
@@ -21,12 +21,15 @@ class AuthInterceptor : Interceptor {
 //            .add("Authorization", "auth-value")
 //            .add("User-Agent", "you-app-name")
 //            .build();
-
         val originalRequest = chain.request()
 
+        val url = chain.request().url.newBuilder()
+            .addQueryParameter("api_key", "4e2895c2da6e111db3b75e57882e7ff5")
+            .build()
         val newRequest = originalRequest.newBuilder()
             .addHeader("content-type", "application/json") //thêm một header với name và value.
             .addHeader("token", "123456789")
+            .url(url)
 //            .cacheControl(CacheControl.FORCE_CACHE) //  Đặt kiểm soát header là của request này, replace lên mọi header đã có.
 //            .headers(headers) //Removes all headers on this builder and adds headers.
 //            .method(originalRequest.method) // Adds request method and request body

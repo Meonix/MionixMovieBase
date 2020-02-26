@@ -21,7 +21,8 @@ import com.squareup.picasso.Picasso
 
 class UpComingMovieAdapter (private val activity: Activity,
                             private val upComingMovieList: MutableList<Result>,
-                            val context: Context) :
+                            val context: Context,
+                            val itemClickListener: OnItemClickListener) :
     RecyclerView.Adapter<UpComingMovieAdapter.ViewHolder>(){
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val v = LayoutInflater.from(parent.context).inflate(R.layout.item_main_layout,parent,false)
@@ -37,25 +38,19 @@ class UpComingMovieAdapter (private val activity: Activity,
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
-        val listPopularMovie= upComingMovieList[position]
-        holder.tvPopularMovie.text = listPopularMovie.originalTitle
-        holder.tvVoteAverage.text = listPopularMovie.voteAverage.toString()
-
-        val moviePosterURL = POSTER_BASE_URL + listPopularMovie.posterPath
-
-        holder.itemView.setOnClickListener {
-            val intent = Intent(context, MovieDetail::class.java)
-            intent.putExtra("movie_id",listPopularMovie.id)
-            intent.putExtra("poster_path",moviePosterURL)
-            val options: ActivityOptionsCompat = ActivityOptionsCompat
-                .makeSceneTransitionAnimation(
-                    activity,holder.ivPopularMovie
-                    , ViewCompat.getTransitionName(holder.ivPopularMovie).toString())
-
-            context.startActivity(intent,options.toBundle())
-        }
-
-
+        val listUpComingMovie= upComingMovieList[position]
+        val moviePosterURL = POSTER_BASE_URL + listUpComingMovie.posterPath
+//        holder.itemView.setOnClickListener {
+//            val intent = Intent(context, MovieDetail::class.java)
+//            intent.putExtra("movie_id",listUpComingMovie.id)
+//            intent.putExtra("poster_path",moviePosterURL)
+//            val options: ActivityOptionsCompat = ActivityOptionsCompat
+//                .makeSceneTransitionAnimation(
+//                    activity,holder.ivPopularMovie
+//                    , ViewCompat.getTransitionName(holder.ivPopularMovie).toString())
+//
+//            context.startActivity(intent,options.toBundle())
+//        }
         //load image form https url into view holder (see build gradle)
         val picasso: Picasso
         val okHttpClient: OkHttpClient
@@ -64,6 +59,7 @@ class UpComingMovieAdapter (private val activity: Activity,
             .downloader(OkHttpDownloader(okHttpClient))
             .build()
         picasso.load(moviePosterURL).into(holder.ivPopularMovie)
+        holder.bind(listUpComingMovie,itemClickListener)
         //
     }
 
@@ -71,5 +67,13 @@ class UpComingMovieAdapter (private val activity: Activity,
         val tvPopularMovie = itemView.findViewById(R.id.tvMovie) as TextView
         val ivPopularMovie =itemView.findViewById(R.id.ivPopularMovie) as ImageView
         val tvVoteAverage = itemView.findViewById(R.id.tvVoteAverage) as TextView
+        fun bind(listUpComingMovie: Result,clickListener: OnItemClickListener)
+        {
+            tvPopularMovie.text = listUpComingMovie.originalTitle
+            tvVoteAverage.text = listUpComingMovie.voteAverage.toString()
+            itemView.setOnClickListener {
+                clickListener.onItemClicked(listUpComingMovie)
+            }
+        }
     }
 }
