@@ -14,8 +14,10 @@ import androidx.appcompat.widget.Toolbar
 import androidx.core.app.ActivityOptionsCompat
 import androidx.core.view.ViewCompat
 import androidx.lifecycle.Observer
+import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.FirebaseUser
 import com.google.firebase.database.DatabaseReference
@@ -82,8 +84,7 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
         toolbar = findViewById(R.id.main_toolbar)
         setSupportActionBar(toolbar)
 
-        mAuth = FirebaseAuth.getInstance()
-        currentUser = mAuth!!.currentUser
+
     }
     private fun setupViewModel() {
         // Setup Trending Movie Recycle View
@@ -169,34 +170,32 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         super.onCreateOptionsMenu(menu)
         menuInflater.inflate(R.menu.option_menu_main, menu)
-        if (currentUser == null) {
-            menu.findItem(R.id.login).title = "Login"
-        } else {
+        if (currentUser != null) {
             menu.findItem(R.id.login).title = "Profile"
+        } else {
+            menu.findItem(R.id.login).title = "Login"
         }
         return true
     }
 
+
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         super.onOptionsItemSelected(item)
-        if (item.itemId == R.id.login) {
-//            mAuth!!.signOut()
-            SendUserToLoginActivity()
-            Toast.makeText(this,"asdads",Toast.LENGTH_SHORT).show()
-        }
         if(item.itemId == R.id.search){
             val intent = Intent(this@MainActivity, SearchActivity::class.java)
             startActivity(intent)
         }
-        if(item.itemId == R.id.loginLine){
-            val intent = Intent(this@MainActivity, LoginwithLine::class.java)
-            startActivity(intent)
+        if(item.itemId == R.id.login){
+            if(item.title == "Login") {
+                val intent = Intent(this@MainActivity, LoginActivity::class.java)
+                startActivity(intent)
+            }
+            else if(item.title == "Profile"){
+                val intent = Intent(this@MainActivity, ProfileActivity::class.java)
+                startActivity(intent)
+            }
         }
         return true
-    }
-    private fun SendUserToLoginActivity(){
-        val loginIntent = Intent(this@MainActivity, SigninActivity::class.java)
-        startActivity(loginIntent)
     }
     override fun onItemClicked(listPopularMovie: Result) {
         val moviePosterURL = POSTER_BASE_URL + listPopularMovie.posterPath
@@ -208,5 +207,11 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
                         this@MainActivity,ivPopularMovie
                         , ViewCompat.getTransitionName(ivPopularMovie).toString())
         startActivity(intent,options.toBundle())
+    }
+
+    override fun onStart() {
+        mAuth = FirebaseAuth.getInstance()
+        currentUser = mAuth!!.currentUser
+        super.onStart()
     }
 }
