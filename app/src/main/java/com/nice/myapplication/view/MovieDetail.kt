@@ -13,6 +13,7 @@ import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.CollapsingToolbarLayout
 import com.nice.myapplication.R
+import com.nice.myapplication.localDatabase.DatabaseHandler
 import com.nice.myapplication.view.adapter.SlidePagerAdapter
 import com.nice.myapplication.model.Backdrop
 import com.nice.myapplication.viewModel.MainViewModel
@@ -54,10 +55,12 @@ class MovieDetail : AppCompatActivity() {
         iv = findViewById(R.id.ivMovieDetail)
 
     }
-    private fun setupViewModel(movie_id : String){
+    private fun getMovieDetail(movie_id : String){
+        val db = DatabaseHandler(this@MovieDetail)
         myViewModel.getMovie(movie_id.toInt())
         myViewModel.getDataMovieDetail.observe(this, Observer {
             tvAbout.text = it.overview
+            db.insertData(it)
             cl.title = it.title
             val picasso: Picasso
             val okHttpClient: OkHttpClient
@@ -68,6 +71,32 @@ class MovieDetail : AppCompatActivity() {
             picasso.load(poster_path).into(iv)
 
         })
+    }
+    private fun setupViewModel(movie_id : String){
+        val db = DatabaseHandler(this@MovieDetail)
+        val data = db.readData()
+        if(db.count()== 0){
+            getMovieDetail(movie_id)
+        }
+        else {
+            for(i in 0 until data.size){
+                if(data[i].id == movie_id.toInt()){
+                    tvAbout.text = data[i].overview
+                    cl.title = data[i].title
+                    val picasso: Picasso
+                    val okHttpClient: OkHttpClient
+                    okHttpClient = OkHttpClient()
+                    picasso = Picasso.Builder(applicationContext)
+                        .downloader(OkHttpDownloader(okHttpClient))
+                        .build()
+                    picasso.load(poster_path).into(iv)
+                    break
+                }
+                else if(i == (data.size-1) && data[i].id != movie_id.toInt()){
+                    getMovieDetail(movie_id)
+                }
+            }
+        }
         myViewModel.getListImageMovie(movie_id.toInt())
         myViewModel.getListImageMovie.observe(this, Observer {
             listSlides.addAll(it.backdrops)

@@ -24,6 +24,8 @@ import com.google.firebase.database.DatabaseReference
 import com.nice.app_ex.data.api.POSTER_BASE_URL
 import com.nice.myapplication.viewModel.MainViewModel
 import com.nice.myapplication.R
+import com.nice.myapplication.localDatabase.DatabaseHandler
+import com.nice.myapplication.model.PopularMovie
 import com.nice.myapplication.model.Result
 import com.nice.myapplication.repo.ListPopularMovieRepo
 import com.nice.myapplication.view.adapter.OnItemClickListener
@@ -35,6 +37,8 @@ import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.item_main_layout.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.io.ByteArrayOutputStream
+import java.io.ObjectOutputStream
 
 
 class MainActivity : AppCompatActivity() , OnItemClickListener {
@@ -55,7 +59,6 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
     private lateinit var adapterPopularMovieView : PopularMovieAdapter
     private lateinit var adapterUpcomingMovieView : UpComingMovieAdapter
     private lateinit var toolbar : Toolbar
-
     private val listPopularMovie :MutableList<Result> = mutableListOf()
     private val listUpcomingMovie :MutableList<Result> = mutableListOf()
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -88,16 +91,20 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
     }
     private fun setupViewModel() {
         // Setup Trending Movie Recycle View
-        myViewModel.getListPopularMovie(pagePopular)
-        myViewModel.getListPopularMovie.observe(this, Observer {
+            myViewModel.getListPopularMovie(pagePopular)
+            myViewModel.getListPopularMovie.observe(this, Observer {
 
-            listPopularMovie.addAll(it.results)
-            recyclerView.adapter!!.notifyDataSetChanged()
-        })
-        adapterPopularMovieView = PopularMovieAdapter(this@MainActivity,listPopularMovie, this,this)
+                listPopularMovie.addAll(it.results)
+                recyclerView.adapter!!.notifyDataSetChanged()
+            })
 
-        recyclerView.adapter = adapterPopularMovieView
+            adapterPopularMovieView =
+                PopularMovieAdapter(this@MainActivity
+                    ,listPopularMovie
+                    ,this
+                    ,this)
 
+            recyclerView.adapter = adapterPopularMovieView
 
         recyclerView.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
@@ -199,6 +206,7 @@ class MainActivity : AppCompatActivity() , OnItemClickListener {
     }
     override fun onItemClicked(listPopularMovie: Result) {
         val moviePosterURL = POSTER_BASE_URL + listPopularMovie.posterPath
+
         val intent = Intent(this@MainActivity, MovieDetail::class.java)
                 intent.putExtra("movie_id",listPopularMovie.id)
                 intent.putExtra("poster_path",moviePosterURL)

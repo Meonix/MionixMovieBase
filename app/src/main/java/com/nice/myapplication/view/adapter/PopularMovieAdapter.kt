@@ -12,6 +12,8 @@ import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.nice.app_ex.data.api.POSTER_BASE_URL
 import com.nice.myapplication.R
+import com.nice.myapplication.localDatabase.DatabaseHandler
+import com.nice.myapplication.model.PopularMovie
 import com.nice.myapplication.model.Result
 import com.squareup.okhttp.OkHttpClient
 import com.squareup.picasso.OkHttpDownloader
@@ -50,6 +52,8 @@ class PopularMovieAdapter(private val activity:Activity,
         picasso.load(moviePosterURL).into(holder.ivPopularMovie)
         //
             holder.bind(listPopularMovie,itemClickListener)
+
+
     }
 
     class ViewHolder(itemView: View) :RecyclerView.ViewHolder(itemView){
