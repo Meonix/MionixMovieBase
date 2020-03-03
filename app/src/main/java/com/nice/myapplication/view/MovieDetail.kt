@@ -1,14 +1,13 @@
 package com.nice.myapplication.view
 
 import android.annotation.SuppressLint
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.text.Editable
-import android.text.TextWatcher
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
-import androidx.core.widget.doOnTextChanged
 import androidx.lifecycle.Observer
 import androidx.viewpager.widget.ViewPager
 import com.google.android.material.appbar.CollapsingToolbarLayout
@@ -22,6 +21,10 @@ import com.squareup.picasso.OkHttpDownloader
 import com.squareup.picasso.Picasso
 import kotlinx.android.synthetic.main.activity_movie_detail.*
 import org.koin.androidx.viewmodel.ext.android.viewModel
+import java.time.LocalDateTime
+import java.time.format.DateTimeFormatter
+import java.util.*
+import kotlin.collections.ArrayList
 import kotlin.concurrent.fixedRateTimer
 
 class MovieDetail : AppCompatActivity() {
@@ -42,7 +45,6 @@ class MovieDetail : AppCompatActivity() {
         poster_path= intent.extras!!["poster_path"].toString()
         setupViewModel(movie_id)
 
-
     }
     @SuppressLint("ResourceAsColor")
     private fun initViewMovieDetail(){
@@ -53,14 +55,18 @@ class MovieDetail : AppCompatActivity() {
         supportActionBar!!.setDisplayHomeAsUpEnabled(true)
         slidePager = findViewById(R.id.vpMovieDetail)
         iv = findViewById(R.id.ivMovieDetail)
-
     }
     private fun getMovieDetail(movie_id : String){
         val db = DatabaseHandler(this@MovieDetail)
         myViewModel.getMovie(movie_id.toInt())
         myViewModel.getDataMovieDetail.observe(this, Observer {
+
+            val timestampLong = System.currentTimeMillis()/60000
+            val timestamp = timestampLong.toString()
             tvAbout.text = it.overview
-            db.insertData(it)
+            db.insertData(it,timestamp)
+            db.updateData(movie_id.toInt(),timestamp)
+
             cl.title = it.title
             val picasso: Picasso
             val okHttpClient: OkHttpClient
@@ -69,7 +75,6 @@ class MovieDetail : AppCompatActivity() {
                 .downloader(OkHttpDownloader(okHttpClient))
                 .build()
             picasso.load(poster_path).into(iv)
-
         })
     }
     private fun setupViewModel(movie_id : String){
@@ -79,8 +84,16 @@ class MovieDetail : AppCompatActivity() {
             getMovieDetail(movie_id)
         }
         else {
+            val timestampLong = System.currentTimeMillis()/3600000
+            val timestamp = timestampLong.toString()
             for(i in 0 until data.size){
-                if(data[i].id == movie_id.toInt()){
+                if(data[i].id == movie_id.toInt() &&(timestamp.toInt()- data[i].datesave.toInt())>1){
+                    getMovieDetail(movie_id)
+
+                }
+                else if(data[i].id == movie_id.toInt() && ( timestamp.toInt()-data[i].datesave.toInt()) <= 0){
+                    Toast.makeText(this,( timestamp.toInt()-data[i].datesave.toInt()).toString(),
+                        Toast.LENGTH_SHORT).show()
                     tvAbout.text = data[i].overview
                     cl.title = data[i].title
                     val picasso: Picasso
@@ -118,4 +131,5 @@ class MovieDetail : AppCompatActivity() {
         })
 
     }
+
 }
